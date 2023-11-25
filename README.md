@@ -16,7 +16,7 @@ SwiftIn is a Next.js 13 application designed to streamline and accelerate the ev
 
 ## Features
 
-1. QR Code Scanning
+1. Event Registration & selection
 
 2. Ticket Verification
 
@@ -50,6 +50,7 @@ SwiftIn is a Next.js 13 application designed to streamline and accelerate the ev
 - NEXT JS 
 - CSS custom properties
 - SASS
+- Firebase [https://console.firebase.google.com/u/0/project/swiftin-acaec/overview]
 
 ## Author
 
