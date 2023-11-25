@@ -4,7 +4,7 @@ import './globals.css';
 const inter = Inter({subsets: ['latin']});
 
 export const metadata = {
-    title: 'SWiftIn Event App',
+    title: 'SwiftIn Event App',
     description: 'Check-in attendees at an event',
 };
 
