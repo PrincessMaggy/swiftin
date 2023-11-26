@@ -1,9 +1,6 @@
 'use client'; // This is a client component
-import swift from '../assets/swift.png';
 import Image from 'next/head';
-import github from '../assets/github.svg';
-import facebook from '../assets/facebook.svg';
-import twitter from '../assets/twitter.svg';
+import Link from 'next/link';
 
 function Footer() {
     return (
@@ -19,17 +16,20 @@ function Footer() {
                                 </h2>
                                 <ul className='text-gray-500 dark:text-gray-400 font-medium'>
                                     <li className='mb-4'>
-                                        <a
+                                        <Link
                                             href='https://swiftin.vercel.app/'
                                             className='hover:underline'
                                         >
                                             SwiftIN
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li>
-                                        <a href='#' className='hover:underline'>
+                                        <Link
+                                            href='#'
+                                            className='hover:underline'
+                                        >
                                             ---
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -39,20 +39,20 @@ function Footer() {
                                 </h2>
                                 <ul className='text-gray-500 dark:text-gray-400 font-medium'>
                                     <li className='mb-4'>
-                                        <a
+                                        <Link
                                             href='https://github.com/princessmaggy/'
                                             className='hover:underline '
                                         >
                                             Github
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li>
-                                        <a
+                                        <Link
                                             href='https://twitter.com/princessmaggy7'
                                             className='hover:underline'
                                         >
                                             Twitter
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -62,14 +62,20 @@ function Footer() {
                                 </h2>
                                 <ul className='text-gray-500 dark:text-gray-400 font-medium'>
                                     <li className='mb-4'>
-                                        <a href='#' className='hover:underline'>
+                                        <Link
+                                            href='#'
+                                            className='hover:underline'
+                                        >
                                             Privacy Policy
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li>
-                                        <a href='#' className='hover:underline'>
+                                        <Link
+                                            href='#'
+                                            className='hover:underline'
+                                        >
                                             Terms &amp; Conditions
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -78,54 +84,54 @@ function Footer() {
                     <hr className='my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8' />
                     <div className='sm:flex sm:items-center sm:justify-between'>
                         <span className='text-sm text-gray-500 sm:text-center dark:text-gray-400'>
-                            © 2023{' '}
-                            <a
+                            © 2023
+                            <Link
                                 href='https://swiftin.vercel.app/'
                                 className='hover:underline'
                             >
                                 SwiftIN
-                            </a>
+                            </Link>
                             . All Rights Reserved.
                         </span>
                         <div className='flex mt-4 sm:justify-center sm:mt-0'>
-                            <a
+                            <Link
                                 href='#'
-                                className='text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                                className='flex items-center space-x-3 rtl:space-x-reverse'
                             >
                                 <Image
-                                    src={facebook}
+                                    src='/assets/facebook.svg'
                                     alt='fb'
-                                    height='auto'
-                                    width='auto'
+                                    height='20'
+                                    width='20'
                                 />
                                 <span className='sr-only'>Facebook page</span>
-                            </a>
+                            </Link>
 
-                            <a
+                            <Link
                                 href='#'
                                 className='text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5'
                             >
                                 <Image
-                                    src={twitter}
+                                    src='/assets/twitter.svg'
                                     alt='twiter'
-                                    height='auto'
-                                    width='auto'
+                                    height='20'
+                                    width='20'
                                 />
                                 <span className='sr-only'>Twitter page</span>
-                            </a>
-                            <a
+                            </Link>
+                            <Link
                                 href='#'
                                 className='text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5'
                             >
                                 <Image
-                                    src={swift}
-                                    width='auto'
-                                    height='auto'
+                                    src='/assets/github.svg'
+                                    width='20'
+                                    height='20'
                                     className='h-10'
                                     alt='swiftin Logo'
                                 />
                                 <span className='sr-only'>GitHub account</span>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>

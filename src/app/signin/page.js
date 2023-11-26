@@ -1,10 +1,6 @@
-import React from 'react';
-import Nav from '../components/nav';
-import Footer from '../components/footer';
 function Page() {
     return (
         <>
-            <Nav />
             <form className='max-w-sm mx-auto'>
                 <div className='mb-5'>
                     <label
@@ -59,7 +55,6 @@ function Page() {
                     Submit
                 </button>
             </form>
-            <Footer />
         </>
     );
 }

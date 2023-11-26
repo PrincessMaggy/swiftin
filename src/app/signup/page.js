@@ -1,12 +1,8 @@
 import React from 'react';
-import Nav from '../components/nav';
-import Footer from '../components/footer';
 
 function Page() {
     return (
         <>
-            <Nav />
-
             <form className='max-w-sm mx-auto'>
                 <div className='relative z-0 w-full mb-5 group'>
                     <input
@@ -132,8 +128,6 @@ function Page() {
                     Submit
                 </button>
             </form>
-
-            <Footer />
         </>
     );
 }
