@@ -1,10 +1,6 @@
 'use client'; // This is a client component
-import swift from '../assets/swift.png';
 import Image from 'next/image';
-import user from '../assets/user.gif';
 import {useState} from 'react';
-import hamburger from '../assets/hamburger.svg';
-import close from '../assets/close.png';
 import {usePathname} from 'next/navigation';
 
 function Nav() {
@@ -26,9 +22,9 @@ function Nav() {
                         className='flex items-center space-x-3 rtl:space-x-reverse'
                     >
                         <Image
-                            src={swift}
-                            width='auto'
-                            height='auto'
+                            src='/assets/swift.png'
+                            width='40'
+                            height='40'
                             className='h-10'
                             alt='swiftin Logo'
                         />
@@ -47,8 +43,10 @@ function Nav() {
                             <span className='sr-only'>Open user menu</span>
                             <Image
                                 className='w-8 h-8 rounded-full'
-                                src={user}
+                                src='/assets/user.gif'
                                 alt='user photo'
+                                width='20'
+                                height='20'
                             />
                         </button>
                         {/* dropdown menu */}
@@ -101,9 +99,13 @@ function Nav() {
                         >
                             <span className='sr-only'>Open main menu</span>
                             <Image
-                                src={isMobileNavOpen ? close : hamburger}
-                                height='auto'
-                                width='auto'
+                                src={
+                                    isMobileNavOpen
+                                        ? '/assets/close.png'
+                                        : '/assets/hamburger.svg'
+                                }
+                                height='30'
+                                width='30'
                                 alt='harmburger'
                             />
                         </button>
