@@ -1,13 +1,48 @@
 'use client'; // This is a client component
 import Image from 'next/image';
 import {useState, useEffect} from 'react';
-import {usePathname} from 'next/navigation';
+import {usePathname, useRouter} from 'next/navigation';
 import Link from 'next/link';
 
+import {onAuthStateChanged, signOut} from 'firebase/auth';
+import {app} from '../../../firebase.config';
+
 function Nav() {
+    const [authUser, setAuthUser] = useState(null);
     const [isDropdownVisible, setDropdownVisibility] = useState(false);
     const [isMobileNavOpen, setMobileNavOpen] = useState(false);
     const router = usePathname();
+    const {push} = useRouter();
+
+    useEffect(() => {
+        const listen = onAuthStateChanged(app, (user) => {
+            if (user) {
+                setAuthUser(user);
+            } else {
+                setAuthUser(null);
+            }
+        });
+
+        return () => {
+            listen();
+        };
+    });
+
+    const handleSignOut = () => {
+        if (authUser) {
+            signOut(app)
+                .then(() => {
+                    alert('Sign out successful');
+                })
+                .catch((err) => {
+                    alert(err);
+                });
+        } else {
+            // router.reload();
+            push('/signin');
+        }
+    };
+
     const toggleMobileNav = () => {
         setMobileNavOpen(!isMobileNavOpen);
     };
@@ -64,10 +99,10 @@ function Nav() {
                         >
                             <div className='px-4 py-3'>
                                 <span className='block text-sm text-gray-900 dark:text-white'>
-                                    Bonnie Green
+                                    {authUser?.name}
                                 </span>
                                 <span className='block text-sm  text-gray-500 truncate dark:text-gray-400'>
-                                    name@flowbite.com
+                                    {authUser?.email}
                                 </span>
                             </div>
                             <ul
@@ -84,12 +119,12 @@ function Nav() {
                                 </li>
 
                                 <li>
-                                    <Link
-                                        href='#'
+                                    <p
                                         className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white'
+                                        onClick={handleSignOut}
                                     >
-                                        Sign out
-                                    </Link>
+                                        {authUser ? 'Sign out' : 'Sign in'}
+                                    </p>
                                 </li>
                             </ul>
                         </div>
