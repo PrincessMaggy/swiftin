@@ -101,8 +101,8 @@ function Footer() {
                                 <Image
                                     src='/assets/facebook.svg'
                                     alt='fb'
-                                    height='20'
-                                    width='20'
+                                    height={20}
+                                    width={20}
                                 />
                                 <span className='sr-only'>Facebook page</span>
                             </Link>
@@ -114,8 +114,8 @@ function Footer() {
                                 <Image
                                     src='/assets/twitter.svg'
                                     alt='twiter'
-                                    height='20'
-                                    width='20'
+                                    height={20}
+                                    width={20}
                                 />
                                 <span className='sr-only'>Twitter page</span>
                             </Link>
@@ -125,8 +125,8 @@ function Footer() {
                             >
                                 <Image
                                     src='/assets/github.svg'
-                                    width='20'
-                                    height='20'
+                                    width={20}
+                                    height={20}
                                     className='h-10'
                                     alt='swiftin Logo'
                                 />

@@ -28,8 +28,8 @@ function Nav() {
                     >
                         <Image
                             src='/assets/swift.png'
-                            width='40'
-                            height='40'
+                            width={40}
+                            height={40}
                             className='h-10'
                             alt='swiftin Logo'
                         />
@@ -50,8 +50,8 @@ function Nav() {
                                 className='w-8 h-8 rounded-full'
                                 src='/assets/user.gif'
                                 alt='user photo'
-                                width='20'
-                                height='20'
+                                width={20}
+                                height={20}
                             />
                         </button>
                         {/* dropdown menu */}
@@ -109,8 +109,8 @@ function Nav() {
                                         ? '/assets/close.png'
                                         : '/assets/hamburger.svg'
                                 }
-                                height='30'
-                                width='30'
+                                height={30}
+                                width={30}
                                 alt='harmburger'
                             />
                         </button>
