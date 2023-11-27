@@ -1,13 +1,21 @@
 'use client';
 import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
-import {toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-import {app} from '../../../firebase.config';
-import {useState} from 'react';
+import {toast, ToastContainer} from 'react-toastify';
+import {useRouter} from 'next/navigation';
+import {app, db, storage} from '../../../firebase.config';
+import {useState, useEffect} from 'react';
+import {doc, setDoc} from 'firebase/firestore';
+import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
+import Image from 'next/image';
 
 function Form() {
     const auth = getAuth();
+    const {push} = useRouter();
+    const [imageUploaded, setImageUploaded] = useState(false);
+    const [profileImageFile, setProfileImageFile] = useState(null);
+    const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+    const [userCreated, setUserCreated] = useState(null);
+
     const [formData, setFormData] = useState({
         firstname: '',
         lastname: '',
@@ -16,8 +24,10 @@ function Form() {
         confirmPass: '',
         phonenumber: '',
         company: '',
+        image: '',
+        imageUrl: '',
     });
-
+    let imageUrl;
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormData({...formData, [name]: value});
@@ -25,10 +35,8 @@ function Form() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // createUserWithEmailAndPassword();
-        console.log(formData, 'formData');
         if (formData.password !== formData.confirmPass) {
-            toast.error('Passwrds do not match!!');
+            toast.error('Passwords do not match!!');
         } else {
             createUserWithEmailAndPassword(
                 auth,
@@ -39,21 +47,159 @@ function Form() {
                     // Signed up
                     const user = userCredential.user;
                     console.log(user, 'user');
-                    toast.success('Sign up was successful');
-                    // ...
+                    setUserCreated(user);
                 })
                 .catch((error) => {
                     const errorCode = error.code;
                     const errorMessage = error.message;
-                    toast.error(errorMessage);
-                    toast(errorCode);
-                    // ..
+                    toast.error(`${errorCode} : ${errorMessage}`);
                 });
         }
     };
 
+    const uploadImageToStorage = async (profileImageFile, userCreated) => {
+        if (!profileImageFile) {
+            return '';
+        }
+
+        try {
+            const timestamp = new Date().getTime();
+            const uniqueId = Math.random().toString(36).substring(7);
+            const imageFileName = `${timestamp}_${uniqueId}.jpg`;
+
+            const imageRef = ref(
+                storage,
+                `profile-pics/${userCreated?.uid}/${imageFileName}`,
+            );
+            await uploadBytes(imageRef, profileImageFile);
+            imageUrl = await getDownloadURL(imageRef);
+
+            return imageUrl;
+        } catch (err) {
+            toast('Error uploading image: ' + err.message);
+            return '';
+        }
+    };
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.Src = e.target.result;
+                setUploadedImageUrl(e.target.result);
+
+                setFormData((prev) => ({
+                    ...prev,
+                    imageUrl: e.target.result,
+                }));
+
+                setUploadedImageUrl(e.target.result);
+                setProfileImageFile(file);
+                setImageUploaded(true);
+            };
+
+            reader.readAsDataURL(file);
+            setProfileImageFile(file);
+        }
+    };
+
+    const addProfilePicToFirestore = async (
+        formData,
+        imageUrl,
+        userCreated,
+    ) => {
+        try {
+            await setDoc(doc(db, 'profiles', userCreated?.uid), {
+                userId: userCreated?.uid,
+                name: `${formData.firstname} ${formData.lastname}`,
+                phonenumber: formData.phonenumber,
+                email: formData.email,
+                company: formData.company,
+                imageUrl: imageUrl,
+            });
+            toast.success('Sign up was successful');
+
+            setTimeout(() => {
+                push('/dashboard');
+            }, 5000);
+        } catch (err) {
+            throw err.message;
+        }
+    };
+
+    useEffect(() => {
+        const uploadProfilePic = async () => {
+            if (profileImageFile && userCreated?.uid) {
+                try {
+                    const imageUrl = await uploadImageToStorage(
+                        profileImageFile,
+                        userCreated,
+                    );
+
+                    await addProfilePicToFirestore(
+                        formData,
+                        imageUrl,
+                        userCreated,
+                    );
+                } catch (err) {
+                    toast.error(err.message);
+                }
+            }
+        };
+
+        uploadProfilePic();
+    }, [profileImageFile, userCreated]);
+
     return (
         <form className='max-w-sm mx-auto mt-4' onSubmit={handleSubmit}>
+            <ToastContainer />
+
+            <hr className='border-gray-400 -mt-6' />
+
+            <div
+                className={`upload_image mx-8 py-12 mt-12 mb-2 cursor-pointer ${
+                    imageUploaded ? 'image-preview-bg' : 'bg-gray-200'
+                }`}
+            >
+                <input
+                    type='file'
+                    accept='image/*'
+                    onChange={handleImageUpload}
+                    style={{display: 'none'}}
+                    id='imageUploadInput'
+                />
+                <label
+                    htmlFor='imageUploadInput'
+                    className='flex flex-col justify-center items-center cursor-pointer'
+                >
+                    <Image
+                        src={
+                            imageUploaded
+                                ? uploadedImageUrl
+                                : '/assets/upload-image.png'
+                        }
+                        alt=''
+                        srcSet=''
+                        id='imagePreview'
+                        name='image'
+                        value={formData.image}
+                        className='w-164 image-preview'
+                        width={50}
+                        height={50}
+                    />
+                    <p className='text-xs md:text-base'>
+                        {imageUploaded
+                            ? 'Image Successfully Uploaded'
+                            : 'Upload Profile Pic'}
+                    </p>
+                </label>
+            </div>
+            <p className='mx-8 text-left text-[12px] text-gray-500 mb-10'>
+                Recommended size: 1080 x 1920
+            </p>
+
             <div className='relative z-0 w-full mb-5 group'>
                 <input
                     type='text'

@@ -3,39 +3,27 @@ import Image from 'next/image';
 import {useState, useEffect} from 'react';
 import {usePathname, useRouter} from 'next/navigation';
 import Link from 'next/link';
-
-import {onAuthStateChanged, signOut} from 'firebase/auth';
+import {toast, ToastContainer} from 'react-toastify';
+import {signOut} from 'firebase/auth';
 import {app} from '../../../firebase.config';
+import {UserAuth} from './auth';
 
 function Nav() {
-    const [authUser, setAuthUser] = useState(null);
     const [isDropdownVisible, setDropdownVisibility] = useState(false);
     const [isMobileNavOpen, setMobileNavOpen] = useState(false);
     const router = usePathname();
     const {push} = useRouter();
-
-    useEffect(() => {
-        const listen = onAuthStateChanged(app, (user) => {
-            if (user) {
-                setAuthUser(user);
-            } else {
-                setAuthUser(null);
-            }
-        });
-
-        return () => {
-            listen();
-        };
-    });
+    const {user} = UserAuth();
 
     const handleSignOut = () => {
-        if (authUser) {
+        console.log(user);
+        if (user) {
             signOut(app)
                 .then(() => {
-                    alert('Sign out successful');
+                    toast.success('Sign out successful');
                 })
                 .catch((err) => {
-                    alert(err);
+                    toast.error(err);
                 });
         } else {
             // router.reload();
@@ -55,10 +43,11 @@ function Nav() {
     }, [router]);
     return (
         <>
+            <ToastContainer />
             <nav className='bg-white border-gray-200 dark:bg-gray-900'>
                 <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4'>
                     <Link
-                        href='/'
+                        href={user?.email ? '/' : '/signin'}
                         className='flex items-center space-x-3 rtl:space-x-reverse'
                     >
                         <Image
@@ -99,10 +88,10 @@ function Nav() {
                         >
                             <div className='px-4 py-3'>
                                 <span className='block text-sm text-gray-900 dark:text-white'>
-                                    {authUser?.name}
+                                    {user?.displayName}
                                 </span>
                                 <span className='block text-sm  text-gray-500 truncate dark:text-gray-400'>
-                                    {authUser?.email}
+                                    {user?.email}
                                 </span>
                             </div>
                             <ul
@@ -111,7 +100,11 @@ function Nav() {
                             >
                                 <li>
                                     <Link
-                                        href='#'
+                                        href={
+                                            user?.email
+                                                ? '/settings'
+                                                : '/signin'
+                                        }
                                         className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white'
                                     >
                                         Settings
@@ -123,7 +116,7 @@ function Nav() {
                                         className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white'
                                         onClick={handleSignOut}
                                     >
-                                        {authUser ? 'Sign out' : 'Sign in'}
+                                        {user ? 'Sign out' : 'Sign in'}
                                     </p>
                                 </li>
                             </ul>
@@ -159,7 +152,7 @@ function Nav() {
                         <ul className='flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700'>
                             <li>
                                 <Link
-                                    href='/'
+                                    href={user?.email ? '/' : '/signin'}
                                     className={`block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 ${
                                         router === '/'
                                             ? 'bg-blue-700 text-white md:bg-transparent md:text-blue-500'
@@ -172,7 +165,7 @@ function Nav() {
                             </li>
                             <li>
                                 <Link
-                                    href='/checkin'
+                                    href={user?.email ? '/checkin' : '/signin'}
                                     className={`block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 ${
                                         router === '/checkin'
                                             ? 'bg-blue-700 text-white md:bg-transparent md:text-blue-500'
@@ -185,7 +178,9 @@ function Nav() {
 
                             <li>
                                 <Link
-                                    href='/dashboard'
+                                    href={
+                                        user?.email ? '/dashboard' : '/signin'
+                                    }
                                     className={`block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700  ${
                                         router === '/dashboard'
                                             ? 'bg-blue-700 text-white md:bg-transparent md:text-blue-500'
